@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar sesión - Inventario.Og</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <script type="module" src="login.js" defer></script>
+</head>
+<body>
+    <header class="NavBar">
+        <img src="images/logo.png" alt="Logo de la empresa" class="Logo">
+        <nav>
+            <a href="index.html#Inicio">Inicio</a>
+            <a href="index.html#Sobre nosotros">Sobre nosotros</a>
+            <a href="login.html">Iniciar sesión</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="Inicio">
+            <h2>Iniciar sesión</h2>
+            <form id="loginForm">
+                <input type="text" id="username" name="username" placeholder="Nombre de usuario" required>
+                <input type="password" id="password" name="password" placeholder="Contraseña" required>
+                <button type="button" id="btnIniciarSesion">Iniciar sesión</button>
+                <p>¿No tienes una cuenta? <a href="registro.html">Regístrate aquí</a></p>
+                <p>¿Olvidaste tu contraseña? <a href="recuperar_clave.html">Recuperala aquí</a></p>
+            </form>
+        </section>
+    </main>
+</body>
+</html>

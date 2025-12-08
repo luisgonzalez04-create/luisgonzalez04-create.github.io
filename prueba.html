@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Prueba Supabase</title>
+  <style>body{font-family:system-ui,Segoe UI,Arial;margin:16px}pre{white-space:pre-wrap;background:#f6f6f6;padding:10px;border-radius:6px}</style>
+</head>
+<body>
+  <h2>Test Supabase</h2>
+  <div id="status">Iniciando...</div>
+  <pre id="out"></pre>
+
+  <script type="module">
+    import { supabase } from './supabase.js'
+
+    const status = (t) => { document.getElementById('status').textContent = t }
+    const out = (o) => { const el = document.getElementById('out'); el.textContent += JSON.stringify(o, null, 2) + '\n\n'; console.log(o) }
+
+    async function test() {
+      status('Verificando cliente...')
+      out({ step: 'cliente cargado', supabaseLoaded: !!supabase })
+
+      if (!supabase) { status('Error: supabase no cargado'); return }
+
+      // 1) ping a auth
+      try {
+        status('Llamando supabase.auth.getSession()...')
+        const respSession = await supabase.auth.getSession()
+        out({ step: 'auth.getSession()', respSession })
+      } catch (err) {
+        out({ step: 'auth.getSession() fallo', err: String(err) })
+      }
+
+      // 2) consulta simple a tabla de prueba
+      try {
+        status('Consultando tabla de prueba (inventario)...')
+        const resp = await supabase
+          .from('inventario')    // <- ajusta el nombre de tu tabla aquí
+          .select('*')
+          .eq('id_usuario', 1)
+
+        out({ step: 'consulta', resp })
+        if (resp.error) {
+          status('Error en consulta: ' + resp.error.message)
+          return
+        }
+        if (!resp.data || resp.data.length === 0) {
+          status('Consulta OK — respuesta vacía (0 filas)')
+        } else {
+          status('Consulta OK — filas recibidas: ' + resp.data.length)
+        }
+      } catch (err) {
+        out({ step: 'consulta catch', err: String(err) })
+        status('Error inesperado (ver consola)')
+      }
+
+      try {
+        status('Consultando tabla de prueba (productos)...')
+        const resp = await supabase
+          .from('usuarios')    // <- ajusta el nombre de tu tabla aquí
+          .select('*')
+          .limit(5)
+
+        out({ step: 'consulta', resp })
+        if (resp.error) {
+          status('Error en consulta: ' + resp.error.message)
+          return
+        }
+        if (!resp.data || resp.data.length === 0) {
+          status('Consulta OK — respuesta vacía (0 filas)')
+        } else {
+          status('Consulta OK — filas recibidas: ' + resp.data.length)
+        }
+      } catch (err) {
+        out({ step: 'consulta catch', err: String(err) })
+        status('Error inesperado (ver consola)')
+      }
+    }
+
+    test()
+  </script>
+</body>
+</html>
+
+
+
