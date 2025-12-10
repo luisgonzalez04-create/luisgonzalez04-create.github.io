@@ -3,6 +3,11 @@ import { supabase } from './supabase.js'
 let PRODUCTOS = [];
 let cantidadRegistros = 0;
 
+// Helper: eliminar todos los espacios (inicio, medio, fin, tabs, saltos)
+function removeAllSpaces(str) {
+    return (str ?? '').normalize('NFKC').replace(/\s+/g, '');
+}
+
 // Función para cargar datos desde Supabase
 async function cargarProductosDesdeSupabase() {
     try {
@@ -16,16 +21,20 @@ async function cargarProductosDesdeSupabase() {
             return;
         }
 
-        PRODUCTOS = data.map(item => ({
-            id: item.id_producto,
-            nombre: item.nombre,
-            categoria: item.categoria,
-            proveedor: item.proveedor,
-            cantidad: item.cantidad,
-            precioUnitario: item.precio_unitario,
-            fecha: item.fecha,
-            descripcion: item.descripcion
-        }));
+        PRODUCTOS = data.map(item => {
+            const raw = removeAllSpaces(item.categoria);
+            const categoriaFinal = (raw === '' || raw == null) ? '' : raw; // guardamos limpio, dejamos '' para representar sin categoría en BD
+            return {
+                id: item.id_producto,
+                nombre: item.nombre,
+                categoria: categoriaFinal,
+                proveedor: item.proveedor,
+                cantidad: item.cantidad,
+                precioUnitario: item.precio_unitario,
+                fecha: item.fecha,
+                descripcion: item.descripcion
+            };
+        });
 
         console.log('Productos cargados:', PRODUCTOS);
         buildTable();
@@ -83,10 +92,10 @@ btnCerrarAgregar.addEventListener("click", ()=>{
 });
 
 btnAgregar.addEventListener("click", async ()=>{
-    const nuevoProducto = {
+        const nuevoProducto = {
         id_producto: cantidadRegistros,
         nombre: document.getElementById("nombreProducto").value,
-        categoria: document.getElementById("categoriaProducto").value,
+        categoria: removeAllSpaces(document.getElementById("categoriaProducto").value),
         proveedor: document.getElementById("proveedorProducto").value,
         cantidad: parseInt(document.getElementById("cantidadProducto").value),
         precio_unitario: parseFloat(document.getElementById("precioProducto").value),
@@ -133,7 +142,7 @@ btnModificar.addEventListener("click", async ()=>{
     
     const productoActualizado = {
         nombre: document.getElementById("nuevoNombreProducto").value,
-        categoria: document.getElementById("nuevaCategoriaProducto").value,
+        categoria: removeAllSpaces(document.getElementById("nuevaCategoriaProducto").value),
         proveedor: document.getElementById("nuevoProveedorProducto").value,
         cantidad: parseInt(document.getElementById("nuevaCantidadProducto").value),
         precio_unitario: parseFloat(document.getElementById("nuevoPrecioProducto").value),
@@ -276,7 +285,10 @@ function crearFiltroPanel(productosList) {
     const select = document.getElementById('filterCategoriaPanel');
     if (!select) return;
 
-    const categorias = [...new Set(productosList.map(p => p.categoria || 'Sin categoría'))].sort();
+    const categorias = [...new Set(productosList.map(p => {
+        const c = removeAllSpaces(p.categoria);
+        return (c === '' || c == null) ? 'Sin categoría' : c;
+    }))].sort();
     
     while (select.options.length > 1) select.remove(1);
     categorias.forEach(cat => {

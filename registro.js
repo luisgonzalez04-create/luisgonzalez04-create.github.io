@@ -3,6 +3,11 @@
 const form = document.getElementById('registerForm');
 const msg = document.getElementById('formMessage');
 
+// Helper: eliminar todos los espacios (inicio, medio, fin, tabs, saltos)
+function removeAllSpaces(str) {
+  return (str ?? '').normalize('NFKC').replace(/\s+/g, '');
+}
+
 //Saber total de usuarios registrados
 async function obtenerTotalUsuarios() {
   try {
@@ -64,10 +69,14 @@ form.addEventListener('submit', async (e) => {
 
   const data = new FormData(form);
   const values = Object.fromEntries(data.entries());
+  const cleanUsername = removeAllSpaces(values.username);
+  // Reflejar el username limpio en el input inmediatamente
+  const usernameInput = document.getElementById('username');
+  if (usernameInput) usernameInput.value = cleanUsername;
   let valid = true;
 
   // Validaciones básicas
-  if (!values.username) {
+  if (!cleanUsername) {
     showError(document.getElementById('username'), 'El usuario es requerido.');
     valid = false;
   }
@@ -91,7 +100,7 @@ form.addEventListener('submit', async (e) => {
   msg.textContent = 'Verificando disponibilidad...';
 
   // Verificar si usuario existe
-  if (await usuarioExiste(values.username)) {
+  if (await usuarioExiste(cleanUsername)) {
     showError(document.getElementById('username'), 'Este usuario ya está registrado.');
     msg.className = '';
     msg.textContent = '';
@@ -100,11 +109,23 @@ form.addEventListener('submit', async (e) => {
 
   // Intentar guardar en Supabase
   try {
+    // Reflejar el username limpio en el campo para mayor claridad
+    const usernameInput = document.getElementById('username');
+    if (usernameInput) usernameInput.value = cleanUsername;
+
+    // Comprobación final por si otro cliente creó el mismo usuario entre la primera verificación y el insert
+    if (await usuarioExiste(cleanUsername)) {
+      showError(document.getElementById('username'), 'Este usuario ya fue registrado (comprobación final).');
+      msg.className = '';
+      msg.textContent = '';
+      return;
+    }
+
     const { data: insertData, error } = await supabase
       .from('usuarios')
       .insert([{
         id: (await obtenerTotalUsuarios()) + 1,
-        nombre: values.username,
+        nombre: cleanUsername,
         descripcion: null,
         password: values.password
       }])

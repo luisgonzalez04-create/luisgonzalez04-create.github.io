@@ -4,30 +4,32 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Inventario.og - Análisis</title>
+    <link rel="stylesheet" type="text/css" href="styles_analisis.css" />
     <!-- Chart.js CDN (used by analisis.js) -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script type="module" src="analisis.js" defer></script>
 </head>
 <body>
     <button onclick="window.location.href='panel.html'">Volver al Panel</button>
-    <h1 id="ingresosTotales">Ingresos Totales: $0.00</h1>
     <!-- Canvas para el gráfico -->
     <div style="max-width:900px; margin:20px auto; background:white; padding:16px; border-radius:8px;">
         <canvas id="ingresosChart" width="800" height="400"></canvas>
     </div>
-    
-    <!-- Filtro por categoría -->
-    <div style="max-width:900px; margin:20px auto; padding:16px;">
-        <label for="filterCategoria" style="font-weight:bold; margin-right:10px;">Filtrar por categoría:</label>
-        <select id="filterCategoria" style="padding:8px; border-radius:4px; border:1px solid #ddd;">
-            <option value="">Todas las categorías</option>
-            <!-- Las opciones se generan dinámicamente -->
-        </select>
-    </div>
 
     <!-- Tabla de productos -->
     <div style="max-width:900px; margin:20px auto; background:white; padding:16px; border-radius:8px;">
-        <h2>Detalle de Productos</h2>
+            <div style="max-width:900px; margin:20px auto; padding:16px;">
+            <label for="filterCategoria" style="font-weight:bold; margin-right:10px;">Filtrar por categoría:</label>
+            <select id="filterCategoria" style="padding:8px; border-radius:4px; border:1px solid #ddd;">
+                <option value="">Todas las categorías</option>
+                <!-- Las opciones se generan dinámicamente -->
+            </select>
+    </div>
+
+    <h1 id="ingresosTotales">Ingresos Totales: $0.00</h1>
+    <br/>
+        
+        <h2>Presupuesto de ventas</h2>
         <table id="productosTable" style="width:100%; border-collapse:collapse;">
             <thead>
                 <tr style="background-color:#4f46e5; color:white;">
