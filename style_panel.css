@@ -1,11 +1,11 @@
 body {
     margin-top: 20px;
     font-family: Arial, sans-serif;
-    background-image: url('images/fondo.png'); /* ruta relativa */
-    background-size: cover;       /* la imagen cubre toda la pantalla */
-    background-position: center;  /* centrada */
-    background-repeat: no-repeat; /* sin repetirse */
-    background-attachment: fixed; /* permanece fija al hacer scroll */
+    background-image: url("/images/prueba1.webp");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
     color: #fff;
 }
 
@@ -170,4 +170,13 @@ form h2 {
     border-radius: 8px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
     color: #4f46e5;
+}
+
+button {
+    background-color: whitesmoke;
+    color: #4f46e5;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 4px;
 }
